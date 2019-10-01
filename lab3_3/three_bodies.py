@@ -87,7 +87,7 @@ def calculate_one_body_increments(target, other, dt):
         abs_force = target['m'] * b['m'] / d**2
         force_direction = [
             (b_center.x - t_center.x) / d,
-            (b_center.x - t_center.y) / d
+            (b_center.y - t_center.y) / d
         ]
         force = [
             force_direction[0] * abs_force,
@@ -97,10 +97,10 @@ def calculate_one_body_increments(target, other, dt):
             force[0] / target['m'],
             force[1] / target['m']
         ]
-        increments['x'] += target['vx'] * dt
-        increments['y'] += target['vy'] * dt
         increments['vx'] += accelaration[0] * dt
         increments['vy'] += accelaration[1] * dt
+    increments['x'] += target['vx'] * dt
+    increments['y'] += target['vy'] * dt
     return increments
 
 
