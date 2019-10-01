@@ -1,4 +1,4 @@
-import graphics
+import graphics as gr
 
 
 init = [
@@ -24,3 +24,15 @@ init = [
         "vy": 0
     }
 ]
+
+
+def main(init):
+    pass
+
+
+window = gr.GraphWin("three bodies", 600, 600)
+
+main(init)
+
+window.getMouse()
+window.close()
