@@ -26,9 +26,16 @@ init = [
 ]
 
 
+def init_1_body(config):
+    """Creates and draws one body and initializes its velocity"""
+    pass
+
+
 def create_state(init):
     """Creates and draws bodies, initializes velocities."""
-    pass
+    bodies = []
+    for config in init:
+        bodies.append(init_1_body(config))
 
 
 def calculate_increments(state, dt):
