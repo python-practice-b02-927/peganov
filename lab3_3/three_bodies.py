@@ -53,9 +53,37 @@ def create_state(init):
 
 def calculate_one_body_increments(target, other, dt):
     """Calculates increments in position and velocity for 1 body"""
+    increments = {
+        "x": 0,
+        "y": 0,
+        "vx": 0,
+        "vy": 0
+    }
     for b in other:
-        d = ((target['x'] - b['x'])**2 + (target['y'] - b['y'])**2)**0.5
-        pass
+        t_center = target['obj'].getCenter()
+        b_center = b['obj'].getCenter()
+        d = (
+            (t_center.x - b_center.x)**2 +
+            (t_center.y - b_center.y)**2
+        )**0.5
+        abs_force = target['m'] * b['m'] / d**2
+        force_direction = [
+            (b_center.x - t_center.x) / d,
+            (b_center.x - t_center.y) / d
+        ]
+        force = [
+            force_direction[0] * abs_force,
+            force_direction[1] * abs_force
+        ]
+        accelaration = [
+            force[0] / target['m'],
+            force[1] / target['m']
+        ]
+        increments['x'] += target['vx'] * dt
+        increments['y'] += target['vy'] * dt
+        increments['vx'] += accelaration[0] * dt
+        increments['vy'] += accelaration[1] * dt
+    return increments
 
 
 def calculate_increments(state, dt):
