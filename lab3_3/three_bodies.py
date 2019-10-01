@@ -1,26 +1,44 @@
 import graphics as gr
 
 
-init = [
+init_classic_orbits = [
     {
-        "m": 90000,
+        "m": 9000000,
         "x": 300,
         "y": 300,
         "vx": 0,
         "vy": 0
     },
     {
-        "m": 100,
+        "m": 1000,
         "x": 300,
-        "y": 100,
-        "vx": 20,
+        "y": 150,
+        "vx": 150,
         "vy": 0
     },
     {
         "m": 1,
         "x": 300,
-        "y": 80,
-        "vx": 22.5,
+        "y": 150,
+        "vx": 400,
+        "vy": 0
+    }
+]
+
+
+init_2_bodies = [
+    {
+        "m": 10**6,
+        "x": 300,
+        "y": 150,
+        "vx": 25,
+        "vy": 0
+    },
+    {
+        "m": 10**6,
+        "x": 300,
+        "y": 450,
+        "vx": -25,
         "vy": 0
     }
 ]
@@ -115,7 +133,7 @@ def apply_increments(state, increments, dt):
 
 
 def main(init):
-    dt = 0.001
+    dt = 0.01
     state = create_state(init)
     for i in range(10**5):
         increments = calculate_increments(state, dt)
@@ -125,7 +143,8 @@ def main(init):
 
 window = gr.GraphWin("three bodies", 600, 600)
 
-main(init)
+# main(init_classic_orbits)
+main(init_2_bodies)
 
 window.getMouse()
 window.close()
