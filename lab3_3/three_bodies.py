@@ -3,24 +3,24 @@ import graphics as gr
 
 init_classic_orbits = [
     {
-        "m": 9000000,
+        "m": 360000,
         "x": 300,
         "y": 300,
         "vx": 0,
         "vy": 0
     },
     {
-        "m": 1000,
+        "m": 400,
         "x": 300,
         "y": 100,
-        "vx": 150,
+        "vx": 30,
         "vy": 0
     },
     {
         "m": 1,
         "x": 300,
         "y": 200,
-        "vx": 150,
+        "vx": 30,
         "vy": 0
     }
 ]
@@ -39,6 +39,31 @@ init_2_bodies = [
         "x": 300,
         "y": 450,
         "vx": -25,
+        "vy": 0
+    }
+]
+
+
+init_double_planet = [
+    {
+        "m": 10**7,
+        "x": 300,
+        "y": 300,
+        "vx": -46,
+        "vy": 0
+    },
+    {
+        "m": 10**6,
+        "x": 300,
+        "y": 100,
+        "vx": 103,
+        "vy": 0
+    },
+    {
+        "m": 10**6,
+        "x": 300,
+        "y": 70,
+        "vx": 263,
         "vy": 0
     }
 ]
@@ -123,28 +148,35 @@ def add_trajectory_point(body_state):
     p.draw(window)
 
 
+def add_trajectory_points(state):
+    for b_state in state:
+        add_trajectory_point(b_state)
+
+
 def apply_increments(state, increments):
     """Updates velocities and moves bodies to new positions"""
     for i, (b_state, b_inc) in enumerate(zip(state, increments)):
-        add_trajectory_point(b_state)
         b_state['vx'] += b_inc['vx']
         b_state['vy'] += b_inc['vy']
         b_state['obj'].move(b_inc['x'], b_inc['y'])
 
 
 def main(init):
-    dt = 0.001
+    dt = 0.0001
     state = create_state(init)
-    for i in range(10**5):
+    for i in range(int(1 / dt)*100):
         increments = calculate_increments(state, dt)
         apply_increments(state, increments)
+        if i % (0.025 / dt) == 0:
+            add_trajectory_points(state)
         gr.time.sleep(dt)
 
 
 window = gr.GraphWin("three bodies", 600, 600)
 
+main(init_double_planet)
 # main(init_classic_orbits)
-main(init_2_bodies)
+# main(init_2_bodies)
 
 window.getMouse()
 window.close()
