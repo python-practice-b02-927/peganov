@@ -35,6 +35,7 @@ def init_1_body(config, color):
     body_state['obj'] = obj
     body_state['vx'] = config['vx']
     body_state['vy'] = config['vy']
+    body_state['m'] = config['m']
     body_state['color'] = color
     return body_state
 
@@ -52,7 +53,9 @@ def create_state(init):
 
 def calculate_one_body_increments(target, other, dt):
     """Calculates increments in position and velocity for 1 body"""
-    pass
+    for b in other:
+        d = ((target['x'] - b['x'])**2 + (target['y'] - b['y'])**2)**0.5
+        pass
 
 
 def calculate_increments(state, dt):
