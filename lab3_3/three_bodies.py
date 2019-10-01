@@ -28,7 +28,15 @@ init = [
 
 def init_1_body(config, color):
     """Creates and draws one body and initializes its velocity"""
-    pass
+    body_state = {}
+    obj = gr.Circle(gr.Point(config['x'], config['y']), 5)
+    obj.draw(window)
+    obj.setFill(color)
+    body_state['obj'] = obj
+    body_state['vx'] = config['vx']
+    body_state['vy'] = config['vy']
+    body_state['color'] = color
+    return body_state
 
 
 def create_state(init):
