@@ -26,8 +26,27 @@ init = [
 ]
 
 
-def main(init):
+def create_state(init):
+    """Creates and draws bodies, initializes velocities."""
     pass
+
+
+def calculate_increments(state, dt):
+    """Calculates dr and dv"""
+    pass
+
+
+def apply_increments(state, increments, dt):
+    """Updates velocities and moves bodies to new positions"""
+    pass
+
+
+def main(init):
+    dt = 0.001
+    state = create_state(init)
+    for i in range(10**5):
+        increments = calculate_increments(state, dt)
+        apply_increments(state, increments, dt)
 
 
 window = gr.GraphWin("three bodies", 600, 600)
