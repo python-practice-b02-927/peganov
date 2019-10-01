@@ -50,9 +50,20 @@ def create_state(init):
     return bodies
 
 
+def calculate_one_body_increments(target, other):
+    """Calculates increments in position and velocity for 1 body"""
+    pass
+
+
 def calculate_increments(state, dt):
     """Calculates dr and dv"""
-    pass
+    increments = []
+    num_bodies = len(state)
+    for i in range(num_bodies):
+        increments.append(
+            calculate_one_body_increments(state[i], state[:i]+state[i+1:])
+        )
+    return increments
 
 
 def apply_increments(state, increments, dt):
