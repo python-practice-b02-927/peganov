@@ -47,6 +47,7 @@ def create_state(init):
         bodies.append(
             init_1_body(config, color)
         )
+    return bodies
 
 
 def calculate_increments(state, dt):
