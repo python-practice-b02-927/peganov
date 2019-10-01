@@ -97,9 +97,21 @@ def calculate_increments(state, dt):
     return increments
 
 
+def add_trajectory_point(body_state):
+    center = body_state['obj'].getCenter()
+    p = gr.Point(center.x, center.y)
+    p.setOutline(body_state['color'])
+    p.setFill(body_state['color'])
+    p.draw(window)
+
+
 def apply_increments(state, increments, dt):
     """Updates velocities and moves bodies to new positions"""
-    pass
+    for b_state, b_inc in zip(state, increments):
+        add_trajectory_point(b_state)
+        b_state['vx'] += b_inc['vx']
+        b_state['vy'] += b_inc['vy']
+        b_state['obj'].move(b_inc['x'], b_inc['y'])
 
 
 def main(init):
