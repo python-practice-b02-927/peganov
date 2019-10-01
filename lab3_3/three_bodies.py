@@ -123,9 +123,9 @@ def add_trajectory_point(body_state):
     p.draw(window)
 
 
-def apply_increments(state, increments, dt):
+def apply_increments(state, increments):
     """Updates velocities and moves bodies to new positions"""
-    for b_state, b_inc in zip(state, increments):
+    for i, (b_state, b_inc) in enumerate(zip(state, increments)):
         add_trajectory_point(b_state)
         b_state['vx'] += b_inc['vx']
         b_state['vy'] += b_inc['vy']
@@ -137,14 +137,14 @@ def main(init):
     state = create_state(init)
     for i in range(10**5):
         increments = calculate_increments(state, dt)
-        apply_increments(state, increments, dt)
+        apply_increments(state, increments)
         gr.time.sleep(dt)
 
 
 window = gr.GraphWin("three bodies", 600, 600)
 
-main(init_classic_orbits)
-# main(init_2_bodies)
+# main(init_classic_orbits)
+main(init_2_bodies)
 
 window.getMouse()
 window.close()
