@@ -57,6 +57,7 @@ def main(init):
     for i in range(10**5):
         increments = calculate_increments(state, dt)
         apply_increments(state, increments, dt)
+        gr.time.sleep(dt)
 
 
 window = gr.GraphWin("three bodies", 600, 600)
