@@ -26,16 +26,19 @@ init = [
 ]
 
 
-def init_1_body(config):
+def init_1_body(config, color):
     """Creates and draws one body and initializes its velocity"""
     pass
 
 
 def create_state(init):
     """Creates and draws bodies, initializes velocities."""
+    colors = ['red', 'green', 'blue']
     bodies = []
-    for config in init:
-        bodies.append(init_1_body(config))
+    for config, color in zip(init, colors):
+        bodies.append(
+            init_1_body(config, color)
+        )
 
 
 def calculate_increments(state, dt):
