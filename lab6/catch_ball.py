@@ -6,6 +6,7 @@ from tkinter import *
 BALL_SCORE = 10
 score = 0
 balls = []
+remove_balls = False
 
 
 def new_ball():
@@ -25,11 +26,14 @@ def new_ball():
 
 
 def remove_random_ball():
-    if len(balls):
-        i = rnd(len(balls))
-        ball = balls.pop(i)
-        canv.delete(ball['id'])
-    root.after(rnd(1000, 5000), remove_random_ball)
+    global remove_balls
+    if remove_balls:
+        if len(balls):
+            i = rnd(len(balls))
+            ball = balls.pop(i)
+            canv.delete(ball['id'])
+    remove_balls = True
+    root.after(rnd(1000, 10000), remove_random_ball)
 
 
 def distance(a, b):
