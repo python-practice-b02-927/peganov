@@ -24,6 +24,14 @@ def new_ball():
     root.after(rnd(1000, 5000), new_ball)
 
 
+def remove_random_ball():
+    if len(balls):
+        i = rnd(len(balls))
+        ball = balls.pop(i)
+        canv.delete(ball['id'])
+    root.after(rnd(1000, 5000), remove_random_ball)
+
+
 def distance(a, b):
     return ((a[0]-b[0])**2 + (a[1] - b[1])**2)**0.5
 
@@ -48,5 +56,6 @@ canv.pack(fill=BOTH, expand=1)
 colors = ['red', 'orange', 'yellow', 'green', 'blue']
 
 new_ball()
+remove_random_ball()
 canv.bind('<Button-1>', click)
 mainloop()
