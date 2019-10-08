@@ -5,16 +5,23 @@ from tkinter import *
 
 BALL_SCORE = 10
 score = 0
+balls = []
 
 
 def new_ball():
-    global x, y, r, score
-    canv.delete(ALL)
     x = rnd(100, 700)
     y = rnd(100, 500)
     r = rnd(30, 50)
-    canv.create_oval(x-r, y-r, x+r, y+r, fill=choice(colors), width=0)
-    root.after(1000, new_ball)
+    id = canv.create_oval(x-r, y-r, x+r, y+r, fill=choice(colors), width=0)
+    balls.append(
+        {
+            "id": id,
+            "x": x,
+            "y": y,
+            "r": r
+        }
+    )
+    root.after(rnd(1000, 5000), new_ball)
 
 
 def distance(a, b):
@@ -23,9 +30,10 @@ def distance(a, b):
 
 def click(event):
     global score
-    if distance([event.x, event.y], [x, y]) <= r:
-        score += BALL_SCORE
-        score_field['text'] = "Score: " + str(score)
+    for ball in balls:
+        if distance([event.x, event.y], [ball['x'], ball['y']]) <= ball['r']:
+            score += BALL_SCORE
+            score_field['text'] = "Score: " + str(score)
 
 
 root = Tk()
