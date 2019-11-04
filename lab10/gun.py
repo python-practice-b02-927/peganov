@@ -276,7 +276,7 @@ class BattleField(tk.Canvas):
         self.bullet_counter = 0
         self.last_hit_bullet_number = None
         self.victory_text_id = self.create_text(
-            400, 300, text='', font='28')
+            WINDOW_SHAPE[0] // 2, WINDOW_SHAPE[1] // 2, text='', font='28')
 
         self.catch_victory_job = None
         self.canvas_restart_job = None
