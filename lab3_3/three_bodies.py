@@ -158,7 +158,7 @@ def apply_increments(state, increments):
     for i, (b_state, b_inc) in enumerate(zip(state, increments)):
         b_state['vx'] += b_inc['vx']
         b_state['vy'] += b_inc['vy']
-        b_state['obj'].move(b_inc['x'], b_inc['y'])
+        b_state['obj'].change_movement_direction(b_inc['x'], b_inc['y'])
 
 
 def main(init):

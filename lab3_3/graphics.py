@@ -505,7 +505,7 @@ class GraphicsObject:
 
     def move(self, dx, dy):
 
-        """move object dx units in x direction and dy units in y
+        """change_movement_direction object dx units in x direction and dy units in y
         direction"""
         
         self._move(dx,dy)
@@ -518,7 +518,7 @@ class GraphicsObject:
             else:
                 x = dx
                 y = dy
-            self.canvas.move(self.id, x, y)
+            self.canvas.change_movement_direction(self.id, x, y)
             if canvas.autoflush:
                 _root.update()
            
@@ -543,7 +543,7 @@ class GraphicsObject:
 
 
     def _move(self, dx, dy):
-        """updates internal state of object to move it dx,dy units"""
+        """updates internal state of object to change_movement_direction it dx,dy units"""
         pass # must override in subclass
 
          
@@ -739,7 +739,7 @@ class Text(GraphicsObject):
         return canvas.create_text(x,y,options)
         
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
         
     def clone(self):
         other = Text(self.anchor, self.config['text'])
@@ -816,7 +816,7 @@ class Entry(GraphicsObject):
         return self.text.get()
 
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
 
     def getAnchor(self):
         return self.anchor.clone()
@@ -897,7 +897,7 @@ class Image(GraphicsObject):
         return canvas.create_image(x,y,image=self.img)
     
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
         
     def undraw(self):
         try:
@@ -1519,7 +1519,7 @@ class GraphicsObject:
 
     def move(self, dx, dy):
 
-        """move object dx units in x direction and dy units in y
+        """change_movement_direction object dx units in x direction and dy units in y
         direction"""
         
         self._move(dx,dy)
@@ -1532,7 +1532,7 @@ class GraphicsObject:
             else:
                 x = dx
                 y = dy
-            self.canvas.move(self.id, x, y)
+            self.canvas.change_movement_direction(self.id, x, y)
             if canvas.autoflush:
                 _root.update()
            
@@ -1557,7 +1557,7 @@ class GraphicsObject:
 
 
     def _move(self, dx, dy):
-        """updates internal state of object to move it dx,dy units"""
+        """updates internal state of object to change_movement_direction it dx,dy units"""
         pass # must override in subclass
 
          
@@ -1753,7 +1753,7 @@ class Text(GraphicsObject):
         return canvas.create_text(x,y,options)
         
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
         
     def clone(self):
         other = Text(self.anchor, self.config['text'])
@@ -1830,7 +1830,7 @@ class Entry(GraphicsObject):
         return self.text.get()
 
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
 
     def getAnchor(self):
         return self.anchor.clone()
@@ -1911,7 +1911,7 @@ class Image(GraphicsObject):
         return canvas.create_image(x,y,image=self.img)
     
     def _move(self, dx, dy):
-        self.anchor.move(dx,dy)
+        self.anchor.change_movement_direction(dx, dy)
         
     def undraw(self):
         try:
