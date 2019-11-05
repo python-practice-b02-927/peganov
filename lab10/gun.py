@@ -1,3 +1,4 @@
+import copy
 import json
 import math
 import os
@@ -50,15 +51,31 @@ class Agent(ABC):
 
 
 class Ball(Agent):
-    def __init__(self, canvas, x, y, vx, vy):
+    def __init__(
+            self,
+            canvas,
+            x,
+            y,
+            vx,
+            vy,
+            color=None,
+            live=None,
+            job_init=None
+    ):
         super().__init__()
+        self.job = job_init
+
         self.canvas = canvas
         self.x = x
         self.y = y
         self.r = 10
         self.vx = vx
         self.vy = vy
-        self.color = choice(['blue', 'green', 'red', 'brown'])
+        if color is None:
+            self.color = choice(['blue', 'green', 'red', 'brown'])
+        else:
+            self.color = color
+
         self.id = self.canvas.create_oval(
             self.x - self.r,
             self.y - self.r,
@@ -66,7 +83,8 @@ class Ball(Agent):
             self.y + self.r,
             fill=self.color
         )
-        self.live = 100
+
+        self.live = 100 if live is None else live
         self.canvas.bullets[self.id] = self
         # Используется для определения номера выстрела, которым уничтожена
         # цель.
@@ -133,7 +151,6 @@ class Ball(Agent):
             "y": self.y,
             "vx": self.vx,
             "vy": self.vy,
-            "r": self.r,
             "color": self.color,
             "live": self.live,
             "job": self.job is not None
@@ -267,7 +284,6 @@ class Gun(Agent):
         state = {
             "gun_coords": self.gun_coords,
             "vy": self.vy,
-            "mouse_coords": self.mouse_coords,
             "f2_power": self.f2_power,
             "f2_on": self.f2_on,
             "an": self.an,
@@ -275,18 +291,30 @@ class Gun(Agent):
         }
         return state
 
+    def set_state(self, state, job_init):
+        self.gun_coords = list(state['gun_coords'])
+        self.vy = state['vy']
+        self.f2_power = state['f2_power']
+        self.f2_on = state['f2_on']
+        self.an = state['an']
+        self.job = job_init if state['job'] else None
+
 
 class Target(Agent):
-    def __init__(self, canvas):
+    def __init__(
+            self, canvas, x=None, y=None, r=None, color=None, job_init=None):
         super().__init__()
+        self.job = job_init
 
-        x = self.x = rnd(600, 780)
-        y = self.y = rnd(300, 550)
-        r = self.r = rnd(2, 50)
-        color = self.color = 'red'
+        x = self.x = rnd(600, 780) if x is None else x
+        y = self.y = rnd(300, 550) if y is None else y
+        r = self.r = rnd(2, 50) if r is None else r
+        color = self.color = 'red' if color is None else color
 
         self.canvas = canvas
         self.id = self.canvas.create_oval(x-r, y-r, x+r, y+r, fill=color)
+
+        self.canvas.targets[self.id] = self
 
     def start(self):
         super().start()
@@ -362,8 +390,21 @@ class BattleField(tk.Canvas):
 
     def create_targets(self):
         for _ in range(self.num_targets):
-            t = Target(self)
-            self.targets[t.id] = t
+            # Не нужно добавлять элемент в словарь `self.targets`,
+            # так как удаление осуществляется в методе `Target.__init__()`
+            Target(self)
+
+    def create_targets_from_states(self, states, job_init):
+        states = copy.deepcopy(states)
+        for state in states:
+            job_active = state.pop('job')
+            Target(self, **state, job_init=job_init if job_active else None)
+
+    def create_bullets_from_states(self, states, job_init):
+        states = copy.deepcopy(states)
+        for state in states:
+            job_active = state.pop('job')
+            Ball(self, **state, job_init=job_init if job_active else None)
 
     def start(self):
         self.catch_victory_job = self.after(DT, self.catch_victory)
@@ -478,6 +519,20 @@ class BattleField(tk.Canvas):
         }
         return state
 
+    def set_state(self, state, job_init):
+        self.gun.set_state(state['gun'], job_init)
+        self.remove_targets()
+        self.create_targets_from_states(state['targets'], job_init)
+        self.remove_bullets()
+        self.create_bullets_from_states(state['bullets'], job_init)
+        self.bullet_counter = state['bullet_counter']
+        self.last_hit_bullet_number = state['last_hit_bullet_number']
+        self.itemconfig(self.victory_text_id, text=state['victory_text'])
+        self.catch_victory_job = \
+            job_init if state['catch_victory_job'] else None
+        self.canvas_restart_job = \
+            job_init if state['canvas_restart_job'] else None
+
 
 class MainFrame(tk.Frame):
     def __init__(self, master):
@@ -500,15 +555,18 @@ class MainFrame(tk.Frame):
         self.score_label['text'] = self.score_tmpl.format(self.score)
         self.battlefield.restart()
 
-    def report_hit(self, bullet, target):
-        self.score += 1
-        self.score_label['text'] = self.score_tmpl.format(self.score)
+    def stop(self):
+        self.battlefield.stop()
+
+    def play(self):
+        self.battlefield.play()
 
     def pause(self):
         self.battlefield.pause()
 
-    def play(self):
-        self.battlefield.play()
+    def report_hit(self, bullet, target):
+        self.score += 1
+        self.score_label['text'] = self.score_tmpl.format(self.score)
 
     def get_state(self):
         state = {
@@ -516,6 +574,11 @@ class MainFrame(tk.Frame):
             'battlefield': self.battlefield.get_state()
         }
         return state
+
+    def set_state(self, state, job_init):
+        self.score = state['score']
+        self.score_label['text'] = self.score_tmpl.format(self.score)
+        self.battlefield.set_state(state['battlefield'], job_init)
 
 
 class Menu(tk.Menu):
@@ -560,11 +623,24 @@ class GunGameApp(tk.Tk):
     def get_state(self):
         return {'main_frame': self.main_frame.get_state()}
 
+    def set_state(self, state, job_init='pause'):
+        self.main_frame.set_state(state['main_frame'], job_init)
+
     def get_save_file_name(self):
         os.makedirs(self.save_dir, exist_ok=True)
         file_name = filedialog.asksaveasfilename(
             initialdir=self.save_dir,
             title='Save game',
+            filetypes=(("json files", "*.json"), ("all files", "*.*"))
+        )
+        if file_name in [(), '']:
+            return None
+        return file_name
+
+    def get_load_file_name(self):
+        file_name = filedialog.askopenfilename(
+            initialdir=self.save_dir,
+            title='Load game',
             filetypes=(("json files", "*.json"), ("all files", "*.*"))
         )
         if file_name in [(), '']:
@@ -583,7 +659,13 @@ class GunGameApp(tk.Tk):
         self.play()
 
     def load(self):
-        pass  # TODO
+        self.pause()
+        file_name = self.get_load_file_name()
+        if file_name is not None:
+            with open(file_name) as f:
+                state = json.load(f)
+            self.set_state(state)
+        self.play()
 
     def new_game(self):
         self.main_frame.new_game()
@@ -593,6 +675,9 @@ class GunGameApp(tk.Tk):
 
     def play(self):
         self.main_frame.play()
+
+    def stop(self):
+        self.main_frame.stop()
 
 
 app = GunGameApp()
