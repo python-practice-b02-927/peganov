@@ -621,9 +621,37 @@ class GunGameApp(tk.Tk):
         self.bind("<Control-s>", self.save)
 
     def get_state(self):
+        """Собирает все меняющиеся признаки виджетов и подвижных элементов
+        из `canvas`.
+        """
         return {'main_frame': self.main_frame.get_state()}
 
     def set_state(self, state, job_init='pause'):
+        """Создает игру соответствующую состоянию `state`.
+
+        Применяется к состояниям приложения полученным с помощью метода
+        `GunGameApp.set_state()`.
+
+        `state` содержит значения всех изменяющиеся в процессе игры
+        признаков. Эти значения присваются признакам `MainFrame`,
+        `BattleField` и `Gun`. Мишени и пули создаются заново.
+        Отложенным событиям, которым соответствует `True` в `state`,
+        присваивается значение `job_init`, Если `job_init == 'pause'`,
+        то игра после выполнения `GunGameApp.set_state()`, игра может
+        быть запущена методом `GunGameApp.play()`.
+
+        Args:
+            state (словарь, содержащий другие словари и списки): Структура
+                словаря `state` должна повторять структуру виджетов
+                приложения. В словаре `state` есть ключ `'main_frame'`,
+                в словаре `state['main_frame']` -- элемент `'battlefield'`
+                и т.д..
+            job_init (`str` или `None`): Этим значением инициализируется
+                активные на момент получения состояния игры `state` отложенные
+                задачи.
+        Returns:
+            None
+        """
         self.main_frame.set_state(state['main_frame'], job_init)
 
     def get_save_file_name(self):
@@ -659,6 +687,8 @@ class GunGameApp(tk.Tk):
         self.play()
 
     def load(self):
+        # Приложение ставится на паузу, а не останавливается, чтобы при сборе
+        # состояния игры было видно, какие отложенные задачи активны.
         self.pause()
         file_name = self.get_load_file_name()
         if file_name is not None:
@@ -671,12 +701,19 @@ class GunGameApp(tk.Tk):
         self.main_frame.new_game()
 
     def pause(self):
+        """Приостанавливает игру. Отложенным задачам присвваивается значение
+        `'pause'`. Игру можно возобновить с помощью метода
+        `GunGameApp.play()`.
+        """
         self.main_frame.pause()
 
     def play(self):
         self.main_frame.play()
 
     def stop(self):
+        """Снимает все отложеннве задачи. Отложенным задачам причваиватеся
+        `None`.
+        """
         self.main_frame.stop()
 
 
