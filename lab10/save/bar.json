@@ -1,0 +1,33 @@
+{
+  "main_frame": {
+    "score": 9,
+    "battlefield": {
+      "gun": {
+        "gun_coords": [
+          20,
+          450
+        ],
+        "vy": 0,
+        "f2_power": 10,
+        "f2_on": 0,
+        "an": -1.5625320521352455,
+        "job": true
+      },
+      "targets": [
+        {
+          "x": 686,
+          "y": 476,
+          "r": 33,
+          "color": "red",
+          "job": true
+        }
+      ],
+      "bullets": [],
+      "bullet_counter": 1,
+      "last_hit_bullet_number": 1,
+      "victory_text": "",
+      "catch_victory_job": true,
+      "canvas_restart_job": false
+    }
+  }
+}

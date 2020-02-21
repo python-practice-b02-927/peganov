@@ -1,0 +1,25 @@
+{
+  "main_frame": {
+    "score": 10,
+    "battlefield": {
+      "gun": {
+        "gun_coords": [
+          20,
+          450
+        ],
+        "vy": 0,
+        "f2_power": 10,
+        "f2_on": 0,
+        "an": 0.028278649296220554,
+        "job": false
+      },
+      "targets": [],
+      "bullets": [],
+      "bullet_counter": 2,
+      "last_hit_bullet_number": 2,
+      "victory_text": "\u0412\u044b \u0443\u043d\u0438\u0447\u0442\u043e\u0436\u0438\u043b\u0438 \u0446\u0435\u043b\u0438 2-\u043c \u0432\u044b\u0441\u0442\u0440\u0435\u043b\u043e\u043c",
+      "catch_victory_job": false,
+      "canvas_restart_job": true
+    }
+  }
+}

@@ -107,19 +107,10 @@ class Ball(Agent):
         self.y -= self.vy
         self.set_coords()
         targets_hit = self.hit_targets()
-        if targets_hit:
-            self.destroy()
-        else:
-            self.live -= 1
-            if self.live > 0:
-                self.job = self.canvas.after(DT, self.update)
-            else:
-                self.destroy()
+        # TODO
 
     def destroy(self):
-        self.stop()
-        self.canvas.delete(self.id)
-        del self.canvas.bullets[self.id]
+        pass  # TODO
 
     def set_coords(self):
         self.canvas.coords(
@@ -204,15 +195,7 @@ class Gun(Agent):
         self.mouse_coords = [None, None]
 
     def update(self):
-        self.gun_coords[1] += self.vy
-        self.update_angle()
-        if self.f2_on:
-            self.f2_power = min(
-                self.f2_power + self.gun_power_gain, self.max_gun_power)
-        else:
-            self.f2_power = self.min_gun_power
-        self.redraw()
-        self.job = self.canvas.after(DT, self.update)
+        pass  # TODO
 
     def update_angle(self):
         self.mouse_coords = self.canvas.get_mouse_coords()
@@ -230,27 +213,13 @@ class Gun(Agent):
         return x, y
 
     def redraw(self):
-        self.canvas.coords(
-            self.id,
-            *self.gun_coords,
-            *self.get_gunpoint()
-        )
-        if self.f2_on:
-            self.canvas.itemconfig(self.id, fill='orange')
-        else:
-            self.canvas.itemconfig(self.id, fill='black')
+        pass  # TODO
 
     def fire2_start(self, event):
         self.f2_on = 1
 
     def fire2_end(self, event):
-        self.update_angle()
-        bullet_vx = self.f2_power * math.cos(self.an)
-        bullet_vy = -self.f2_power * math.sin(self.an)
-        bullet = Ball(self.canvas, *self.get_gunpoint(), bullet_vx, bullet_vy)
-        bullet.start()
-        self.f2_on = 0
-        self.f2_power = 10
+        pass  # TODO
 
     def set_movement_direction_to_up(self, event):
         self.vy = -self.gun_velocity
@@ -303,18 +272,7 @@ class Gun(Agent):
 class Target(Agent):
     def __init__(
             self, canvas, x=None, y=None, r=None, color=None, job_init=None):
-        super().__init__()
-        self.job = job_init
-
-        x = self.x = rnd(600, 780) if x is None else x
-        y = self.y = rnd(300, 550) if y is None else y
-        r = self.r = rnd(2, 50) if r is None else r
-        color = self.color = 'red' if color is None else color
-
-        self.canvas = canvas
-        self.id = self.canvas.create_oval(x-r, y-r, x+r, y+r, fill=color)
-
-        self.canvas.targets[self.id] = self
+        pass  # TODO
 
     def start(self):
         super().start()
@@ -337,14 +295,7 @@ class Target(Agent):
         del self.canvas.targets[self.id]
 
     def get_state(self):
-        state = {
-            "x": self.x,
-            "y": self.y,
-            "r": self.r,
-            "color": self.color,
-            "job": self.job is not None
-        }
-        return state
+        pass  # TODO
 
 
 class BattleField(tk.Canvas):
@@ -369,24 +320,10 @@ class BattleField(tk.Canvas):
         self.canvas_restart_job = None
 
     def remove_targets(self, targets_to_remove=None):
-        if targets_to_remove is None:
-            ids = list(self.targets)
-        else:
-            ids = list(targets_to_remove)
-        for id_ in ids:
-            # Не нужно удалять элемент словаря `self.targets`, так как удаление
-            # осуществляется в методе `Target.destroy()`.
-            self.targets[id_].destroy()
+        pass  # TODO
 
     def remove_bullets(self, bullets_to_remove=None):
-        if bullets_to_remove is None:
-            ids = list(self.bullets)
-        else:
-            ids = list(bullets_to_remove)
-        for id_ in ids:
-            # Не нужно удалять элемент словаря `self.bullets`, так как удаление
-            # осуществляется в методе `Ball.destroy()`.
-            self.bullets[id_].destroy()
+        pass  # TODO
 
     def create_targets(self):
         for _ in range(self.num_targets):
@@ -422,25 +359,14 @@ class BattleField(tk.Canvas):
                 VICTORY_MSG_TIME, self.restart)
 
     def play(self):
-        self.play_jobs()
-        self.gun.play()
-        for t in self.targets.values():
-            t.play()
-        for b in self.bullets.values():
-            b.play()
+        """Продолжить игру после паузы."""
+        pass  # TODO
 
     def stop(self):
-        self.gun.stop()
-        for t in self.targets.values():
-            t.stop()
-        for b in self.bullets.values():
-            b.stop()
-        if self.catch_victory_job is not None:
-            self.after_cancel(self.catch_victory_job)
-            self.catch_victory_job = None
-        if self.canvas_restart_job is not None:
-            self.after_cancel(self.canvas_restart_job)
-            self.canvas_restart_job = None
+        """Остановить движение все движение на поле. Отменить все
+        отложенные задания.
+        """
+        pass  # TODO
 
     def pause_jobs(self):
         if self.catch_victory_job is not None:
@@ -451,21 +377,11 @@ class BattleField(tk.Canvas):
             self.canvas_restart_job = 'pause'
 
     def pause(self):
-        self.gun.pause()
-        for t in self.targets.values():
-            t.pause()
-        for b in self.bullets.values():
-            b.pause()
-        self.pause_jobs()
+        """Поставить поле боя на паузу."""
+        pass  # TODO
 
     def restart(self):
-        self.stop()
-        self.itemconfig(self.victory_text_id, text='')
-        self.remove_targets()
-        self.remove_bullets()
-        self.create_targets()
-        self.bullet_counter = 0
-        self.start()
+        pass  # TODO
 
     def get_root(self):
         root = self.master
@@ -481,20 +397,14 @@ class BattleField(tk.Canvas):
         return [abs_x - canvas_x, abs_y - canvas_y]
 
     def show_victory_text(self):
-        self.itemconfig(
-            self.victory_text_id,
-            text='Вы уничтожили цели {}-м выстрелом'.format(
-                self.last_hit_bullet_number))
-        self.canvas_restart_job = self.after(VICTORY_MSG_TIME, self.restart)
+        pass  # TODO
 
     def catch_victory(self):
         """Завершает раунда и показывает сколько выстрелов потребовалось,
         чтобы сбить цели.
         """
         if not self.targets:
-            self.catch_victory_job = None
-            self.stop()
-            self.show_victory_text()
+            pass  # TODO
         else:
             self.catch_victory_job = self.after(DT, self.catch_victory)
 
@@ -520,18 +430,7 @@ class BattleField(tk.Canvas):
         return state
 
     def set_state(self, state, job_init):
-        self.gun.set_state(state['gun'], job_init)
-        self.remove_targets()
-        self.create_targets_from_states(state['targets'], job_init)
-        self.remove_bullets()
-        self.create_bullets_from_states(state['bullets'], job_init)
-        self.bullet_counter = state['bullet_counter']
-        self.last_hit_bullet_number = state['last_hit_bullet_number']
-        self.itemconfig(self.victory_text_id, text=state['victory_text'])
-        self.catch_victory_job = \
-            job_init if state['catch_victory_job'] else None
-        self.canvas_restart_job = \
-            job_init if state['canvas_restart_job'] else None
+        pass  # TODO
 
 
 class MainFrame(tk.Frame):
@@ -576,9 +475,7 @@ class MainFrame(tk.Frame):
         return state
 
     def set_state(self, state, job_init):
-        self.score = state['score']
-        self.score_label['text'] = self.score_tmpl.format(self.score)
-        self.battlefield.set_state(state['battlefield'], job_init)
+        pass  # TODO
 
 
 class Menu(tk.Menu):
@@ -588,9 +485,7 @@ class Menu(tk.Menu):
         self.game = game
 
         self.file_menu = tk.Menu(self)
-        self.file_menu.add_command(label="save", command=self.master.save)
-        self.file_menu.add_command(label="load", command=self.master.load)
-        self.add_cascade(label="file", menu=self.file_menu)
+        # FIXME
 
         self.game_menu = tk.Menu(self)
         self.game_menu.add_command(label="new", command=self.master.new_game)
@@ -615,7 +510,7 @@ class GunGameApp(tk.Tk):
         self.main_frame = MainFrame(self)
         self.main_frame.pack(fill=tk.BOTH, expand=1)
 
-        self.menu = Menu(self, self)
+        self.menu = Menu(self)
         self.config(menu=self.menu)
 
         self.bind("<Control-s>", self.save)
@@ -666,14 +561,7 @@ class GunGameApp(tk.Tk):
         return file_name
 
     def get_load_file_name(self):
-        file_name = filedialog.askopenfilename(
-            initialdir=self.save_dir,
-            title='Load game',
-            filetypes=(("json files", "*.json"), ("all files", "*.*"))
-        )
-        if file_name in [(), '']:
-            return None
-        return file_name
+        file_name = filedialog.askopenfilename()  # FIXME
 
     def save(self, event=None):
         self.pause()
@@ -687,15 +575,7 @@ class GunGameApp(tk.Tk):
         self.play()
 
     def load(self):
-        # Приложение ставится на паузу, а не останавливается, чтобы при сборе
-        # состояния игры было видно, какие отложенные задачи активны.
-        self.pause()
-        file_name = self.get_load_file_name()
-        if file_name is not None:
-            with open(file_name) as f:
-                state = json.load(f)
-            self.set_state(state)
-        self.play()
+        pass  # FIXME
 
     def new_game(self):
         self.main_frame.new_game()
